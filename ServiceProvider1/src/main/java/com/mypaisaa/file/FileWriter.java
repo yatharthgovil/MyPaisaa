@@ -39,10 +39,10 @@ public class FileWriter {
         
 		return true;
 		} catch (JsonProcessingException e) {
-            logger.error("failed conversion: message to Json"+e.getStackTrace());;
+            logger.error("failed conversion: message to Json",e);;
         }
 		catch(IOException ex) {
-			logger.error("could not write to file"+ex.getStackTrace());
+			logger.error("could not write to file",ex);
 		}
 		return false;
 	}
