@@ -29,8 +29,8 @@ public class FileWriter {
 	
 	public boolean writeToFile(MessageDTO message) {
 
-		logger.info("writing mesage for number---->"+message.getNumber());;
-		logger.info("Message----------->"+message.getMessage());;
+		//logger.info("writing mesage for number---->"+message.getNumber());;
+		//logger.info("Message----------->"+message.getMessage());;
 		try {
             String msgJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(message);
             Path path = Paths.get(filePath);

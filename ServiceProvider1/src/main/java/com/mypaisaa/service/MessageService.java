@@ -2,6 +2,8 @@ package com.mypaisaa.service;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +16,15 @@ public class MessageService {
 
 	@Autowired
 	private FileWriter fileWriter;
+    private static Logger logger = LoggerFactory.getLogger(MessageService.class);
+
 	public ResponseDTO writeMessage(MessageDTO message) {
-		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			logger.error("error occured"+e.getMessage());
+
+		}
 		boolean result = fileWriter.writeToFile(message);
 		String respResult;
 		if(result) {

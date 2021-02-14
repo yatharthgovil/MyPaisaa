@@ -6,21 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.lbalancer.conf.LoadConfiguration;
+import com.lbalancer.conf.LoadBalancerConfiguration;
 
 
 @Component
 public class ScheduledTask {
 
 	@Autowired
-	private LoadConfiguration loadConfiguration;
+	private LoadBalancerConfiguration loadConfiguration;
     private static Logger logger = LoggerFactory.getLogger(ScheduledTask.class);
 
 	@Scheduled(fixedRate = 1000)
 	public void checkHeartBeat() {
 
-		logger.info("job started------------");
 		loadConfiguration.loadHeartBeatStatuses();
+
+	}
+	
+	@Scheduled(fixedRate = 60000,initialDelay = 1200)
+	public void assignLoad() {
+
+		loadConfiguration.assignLoad();
 
 	}
 

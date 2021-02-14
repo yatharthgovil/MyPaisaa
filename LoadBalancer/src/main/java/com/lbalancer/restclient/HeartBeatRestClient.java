@@ -20,14 +20,14 @@ public class HeartBeatRestClient {
 
 	public boolean checkHeartBeat(String url) {
 
-		logger.info("url------------" + url);
+		//logger.info("url------------" + url);
 
 		ResponseEntity<String> response = null;
 
 		try {
 			response = restTemplate.getForEntity(url, String.class);
 		} catch (RestClientException e) {
-			logger.error("error in checking heartbeeate for address" + url, e);
+			logger.error("error in checking heartbeeate for address" + url, e.getMessage());
 		}
 
 		return response != null ? response.getStatusCode().equals(HttpStatus.OK) : false;
