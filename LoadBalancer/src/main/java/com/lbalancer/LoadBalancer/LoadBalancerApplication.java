@@ -29,9 +29,9 @@ public class LoadBalancerApplication {
 	@Bean
 	public ThreadPoolTaskExecutor poolTaskExecutor() {
 	    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-	    executor.setCorePoolSize(10);
-	    executor.setMaxPoolSize(50);
-	    executor.setQueueCapacity(9000);
+	    executor.setCorePoolSize(100);
+	    executor.setMaxPoolSize(200);
+	    executor.setQueueCapacity(9800);
 	    executor.setThreadNamePrefix("HeartBeatThread");
 	    executor.initialize();
 	    return executor;

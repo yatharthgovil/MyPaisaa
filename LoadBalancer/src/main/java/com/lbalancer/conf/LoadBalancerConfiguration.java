@@ -108,6 +108,13 @@ public class LoadBalancerConfiguration {
 				maxRequestIndex);
 	}
 
+	public boolean checkStatus() {
+		for(int i=0;i<heartBeatStatuses.size();i++) {
+			if(heartBeatStatuses.get(i).get())
+				return true;
+		}
+		return false;
+	}
 	public void incrementRequestCounter() {
 		totalRequestCounter.incrementAndGet();
 	}

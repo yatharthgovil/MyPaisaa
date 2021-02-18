@@ -1,5 +1,6 @@
 package com.lbalancer.service;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +26,6 @@ public class RequestHandlerService {
 	
 	@Autowired
 	private LoadRequestRestClient loadRequestRestClient;
-	private LoadAssignmentService loadAssignmentService;
 	@Autowired
 	private MessageQueueService messageQueueService;
 	
@@ -75,6 +75,15 @@ public class RequestHandlerService {
 			return maxSPIndex.get();
 	}
 	
+	public ResponseDTO checkStatus() {
+		
+		if(loadBalancerConfiguration.checkStatus())
+			return new ResponseDTO("up",LocalDateTime.now());
+		else
+			return new ResponseDTO("down",LocalDateTime.now());
+
+	}
+	
 	public class LoadRequestTaskWrapper implements Runnable {
 		public LoadRequestTask loadRequestTask;
 		public int index;
@@ -87,12 +96,17 @@ public class RequestHandlerService {
 		}
 
 		public void run() {
+			
+			BigInteger id = null;
 			try {
+				id = loadRequestTask.messageDTO.getId();
+				loadRequestTask.messageDTO.setId(null);
 				ResponseDTO response = loadRequestTask.run();
 				runningSums.get(index).addAndGet(response.getResponseTime());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				messageQueueService.send(loadRequestTask.messageDTO);
+				loadRequestTask.messageDTO.setId(id);
+				messageQueueService.send(loadRequestTask.messageDTO, "message_topic_lb_lr");
 			}
 		   
 		}

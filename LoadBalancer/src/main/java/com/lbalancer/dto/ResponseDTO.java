@@ -11,6 +11,10 @@ public class ResponseDTO {
 	public ResponseDTO() {
 		
 	}
+	
+	public ResponseDTO(String result) {
+		this.result = result;
+	}
 	public ResponseDTO(String result, LocalDateTime timestamp) {
 		this .result = result;
 		this.timestamp = timestamp;
