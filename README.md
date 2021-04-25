@@ -1,3 +1,3 @@
-# MyPaisaa
+# LoadBalancer
 
-Project for Mypaisaa assessment purposes. Project simulates an intelligent load balancer that balances load depending on the average response time of the services.
+projecct for self learing purpose. its a fault tolerant intelligent load balancer that reduces response time and selects the best available instance of the service to reduce the response time
