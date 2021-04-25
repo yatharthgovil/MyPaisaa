@@ -7,11 +7,14 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoadAssignmentService {
 
+	@Value("${scheduler.fixed.delay}")
+	private String fixedRate;
 	private static Logger logger = LoggerFactory.getLogger(LoadAssignmentService.class);
 
 	public void assignLoad(List<AtomicLong> responseTimeRunningSums,
@@ -21,6 +24,7 @@ public class LoadAssignmentService {
 			AtomicInteger maxServiceProviderIndex) {
 
 		int responseTimeAvg[] = new int[addresses.size()];
+		long connectionsPerSecond[] = new long[addresses.size()];
 		int workingNodes[] = new int[addresses.size()];
 		int j=0;
 		for(int i=0;i<addresses.size();i++) {
@@ -31,22 +35,30 @@ public class LoadAssignmentService {
 				requestsBatchPerServiceProvider.get(i).set(0);
 			}
 		}
+		Long fixedDelay = Long.parseLong(fixedRate);
 		for(int i=0;i<addresses.size();i++) {
 			
 			long runningSum = responseTimeRunningSums.get(i).get();
 			responseTimeRunningSums.get(i).set(0);
 			int serviceProviderRequests = serviceProviderRequestCounters.get(i).get();
-			if(serviceProviderRequests>0)
-			responseTimeAvg[i] = (int)runningSum/serviceProviderRequests;
-			else 
+			
+			if(serviceProviderRequests>0) {
+				responseTimeAvg[i] = (int)runningSum/serviceProviderRequests;
+				connectionsPerSecond[i] = serviceProviderRequests/fixedDelay ;
+			}
+			else {
 				responseTimeAvg[i] = 0;
+				connectionsPerSecond[i] = 0;
+			}
 			serviceProviderRequestCounters.get(i).set(0);
-		}		float proportions[] = new float[addresses.size()-1];
-		float a = responseTimeAvg[workingNodes[0]];
+		}		
+		float proportions[] = new float[addresses.size()-1];
+		float a = responseTimeAvg[workingNodes[0]]*responseTimeAvg[workingNodes[0]] + connectionsPerSecond[workingNodes[0]];
+		
 		float prod = 1;
 		int  k = 1;
 		for(int i=1;i<j;i++) {
-			int b = responseTimeAvg[workingNodes[k]] ;
+			float b = responseTimeAvg[workingNodes[k]]*responseTimeAvg[workingNodes[k]] + connectionsPerSecond[workingNodes[0]] ;
 			if(a>0&&b>0) {
 				proportions[i-1] = b/a;
 			}else {

@@ -23,7 +23,7 @@ public class ScheduledTask {
 
 	}
 	
-	@Scheduled(fixedRate = 60000,initialDelay = 1200)
+	@Scheduled(fixedRateString = "${scheduler.fixed.delay}",initialDelay = 1200)
 	public void assignLoad() {
 
 		loadConfiguration.assignLoad();
